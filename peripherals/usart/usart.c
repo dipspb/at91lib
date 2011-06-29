@@ -57,6 +57,9 @@ void USART_Configure(AT91S_USART *usart,
     // Configure mode
     usart->US_MR = mode;
 
+    usart->US_IER = 0x0000; // no usart interupts enabled
+    usart->US_IDR = 0xFFFF; // all usart interupts disabled
+
     // Configure baudrate
     // Asynchronous, no oversampling
     if (((mode & AT91C_US_SYNC) == 0)
@@ -64,6 +67,11 @@ void USART_Configure(AT91S_USART *usart,
     
         usart->US_BRGR = (masterClock / baudrate) / 16;
     }
+
+    usart->US_RTOR = 0;
+    usart->US_TTGR = 0;
+    usart->US_FIDI = 0;
+    usart->US_IF = 0;
     // TODO other modes
 }
 
@@ -103,6 +111,16 @@ void USART_SetReceiverEnabled(AT91S_USART *usart,
         usart->US_CR = AT91C_US_RXDIS;
     }
 }
+
+void USART_InteruptsEnable(AT91S_USART *usart, unsigned int interupts )
+{
+    usart->US_IER = interupts;
+}
+void USART_InteruptsDisable(AT91S_USART *usart, unsigned int interupts )
+{
+    usart->US_IDR = interupts;
+}
+
 
 //------------------------------------------------------------------------------
 /// Sends one packet of data through the specified USART peripheral. This
@@ -173,6 +191,12 @@ unsigned char USART_WriteBuffer(
 
         return 0;
     }
+}
+
+unsigned int USART_IsWriteBufferReady(
+    AT91S_USART *usart)
+{
+    return (usart->US_TCR == 0) && (usart->US_TNCR == 0);
 }
 
 //------------------------------------------------------------------------------

@@ -100,6 +100,8 @@ extern unsigned char USART_WriteBuffer(
     AT91S_USART *usart,
     void *buffer,
     unsigned int size);
+extern unsigned int USART_IsWriteBufferReady(
+    AT91S_USART *usart);
 
 extern unsigned short USART_Read(
     AT91S_USART *usart, 
@@ -119,6 +121,7 @@ extern void USART_PutChar(AT91S_USART *usart, unsigned char c);
 extern unsigned int USART_IsRxReady(AT91S_USART *usart);
 
 extern unsigned char USART_GetChar(AT91S_USART *usart);
+
 
 
 #endif //#ifndef USART_H
